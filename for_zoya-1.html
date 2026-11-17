@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f9e9ee">
+<title>For Zoya — one little apology</title>
+<style>
+  :root {
+    --paper: #fffaf8;
+    --pink: #e7a9b9;
+    --deep: #92566c;
+    --ink: #614653;
+    --muted: #9b7e89;
+  }
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100svh; margin: 0; padding: 24px;
+    display: grid; place-items: center; overflow: hidden;
+    color: var(--ink);
+    font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+    background: #f9e9ee;
+  }
+  .backdrop {
+    position: fixed; inset: 0; overflow: hidden; pointer-events: none;
+    background:
+      radial-gradient(ellipse at 18% 18%, #fffdfb 0, transparent 42%),
+      radial-gradient(ellipse at 86% 82%, #f2cbd6 0, transparent 39%),
+      linear-gradient(135deg, #fff8f4, #f8e5eb 58%, #f5e9e5);
+  }
+  .sun {
+    position: absolute; width: 340px; height: 340px; border-radius: 50%;
+    right: -130px; top: -155px; background: #fff7ed; opacity: .75;
+    filter: blur(2px);
+  }
+  .petal {
+    position: absolute; width: 13px; height: 22px; border-radius: 100% 0 100% 0;
+    background: #dfa0b2; opacity: .28; transform: rotate(30deg);
+    animation: float 12s ease-in-out infinite;
+  }
+  .petal.p1 { left: 9%; top: 22%; }
+  .petal.p2 { right: 12%; top: 38%; animation-delay: -4s; transform: rotate(75deg) scale(.8); }
+  .petal.p3 { left: 17%; bottom: 15%; animation-delay: -7s; transform: rotate(125deg) scale(1.1); }
+  .petal.p4 { right: 21%; bottom: 13%; animation-delay: -2s; transform: rotate(15deg) scale(.7); }
+  .wrap { position: relative; z-index: 1; width: min(100%, 440px); }
+  .note {
+    position: relative; padding: 43px 30px 30px; text-align: center;
+    border-radius: 8px 8px 24px 24px;
+    background: var(--paper);
+    box-shadow: 0 28px 75px rgba(111, 66, 83, .15);
+    border: 1px solid rgba(255,255,255,.9);
+    animation: enter .8s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .note::before {
+    content: ""; position: absolute; left: 18px; right: 18px; top: 12px;
+    height: 1px; background: #f0dfe2;
+  }
+  .stamp {
+    width: 54px; height: 54px; display: grid; place-items: center;
+    margin: 0 auto 22px; border-radius: 50%;
+    color: #b76c85; background: #f9e9ed; font: 27px Georgia, serif;
+  }
+  .kicker {
+    margin: 0 0 12px; text-transform: uppercase; letter-spacing: .24em;
+    color: #b17b8d; font-size: 10px; font-weight: 700;
+  }
+  h1 {
+    margin: 0; color: #875267; font: 500 clamp(34px, 8vw, 43px)/1.12 Georgia, serif;
+    letter-spacing: -.035em;
+  }
+  .copy {
+    max-width: 320px; margin: 18px auto 0; color: #806775;
+    font-size: 15px; line-height: 1.85;
+  }
+  .rule { display: flex; align-items: center; gap: 12px; margin: 26px 0 22px; color: #c58b9d; }
+  .rule::before, .rule::after { content: ""; height: 1px; flex: 1; background: #ecdce1; }
+  .rule span { font: 16px Georgia, serif; }
+  .actions { min-height: 58px; display: flex; justify-content: center; align-items: center; gap: 12px; }
+  button {
+    border: 0; border-radius: 999px; padding: 14px 22px; min-width: 118px;
+    font: 650 14px/1.2 "Avenir Next", Avenir, "Segoe UI", sans-serif;
+    cursor: pointer; transition: transform .32s cubic-bezier(.2,.8,.2,1), opacity .25s, box-shadow .25s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:focus-visible { outline: 2px solid #92566c; outline-offset: 4px; }
+  #yes { color: white; background: #b96f88; box-shadow: 0 8px 20px #b96f8838; }
+  #no { color: #8c6876; background: #f3e8e9; }
+  .foot { margin: 25px 0 0; color: #b59aa4; font: italic 12px Georgia, serif; }
+  .please, .accepted { display: none; animation: reveal .55s cubic-bezier(.2,1.4,.4,1) both; }
+  .please h2 { margin: 0; color: #92566c; font: 500 clamp(38px, 10vw, 51px)/1.1 Georgia, serif; }
+  .please p, .accepted p { margin: 14px auto 0; color: #806775; line-height: 1.7; font-size: 14px; }
+  .accepted h2 { margin: 0; color: #92566c; font: 500 clamp(34px, 8vw, 42px)/1.15 Georgia, serif; }
+  .tiny-heart { display: inline-block; color: #c77b94; animation: beat 1.2s ease-in-out infinite; }
+  .confetti { position: fixed; z-index: 5; top: -24px; pointer-events: none; animation: rain var(--time) ease-in forwards; }
+  @keyframes enter { from { opacity: 0; transform: translateY(18px) rotate(-1deg); } to { opacity: 1; transform: none; } }
+  @keyframes reveal { from { opacity: 0; transform: translateY(10px) scale(.88); } to { opacity: 1; transform: none; } }
+  @keyframes float { 0%,100% { translate: 0 0; rotate: 0deg; } 50% { translate: 10px -18px; rotate: 24deg; } }
+  @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.25); } }
+  @keyframes rain { to { transform: translate3d(var(--drift), 110vh, 0) rotate(360deg); opacity: 0; } }
+  @media (max-width: 360px) { .note { padding: 38px 20px 26px; } button { min-width: 106px; padding: 13px 17px; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<div class="backdrop" aria-hidden="true">
+  <div class="sun"></div>
+  <i class="petal p1"></i><i class="petal p2"></i><i class="petal p3"></i><i class="petal p4"></i>
+</div>
+
+<main class="wrap">
+  <article class="note" aria-live="polite">
+    <div class="stamp" aria-hidden="true">♡</div>
+
+    <section id="intro">
+      <p class="kicker">A note, just for you</p>
+      <h1>Zoya, I'm sorry.</h1>
+      <p class="copy">I've been busy lately, and I should've made more time for you. I never meant to make you feel forgotten. Will you forgive me?</p>
+      <div class="rule" aria-hidden="true"><span>✧</span></div>
+    </section>
+
+    <section class="please" id="please">
+      <h2>Please 🙏!!!</h2>
+      <p>I really am sorry, Zoya. <span class="tiny-heart">♡</span></p>
+    </section>
+
+    <section class="accepted" id="accepted">
+      <p class="kicker">A little hope restored</p>
+      <h2>Thank you, Zoya. <span class="tiny-heart">♡</span></h2>
+      <p>I'll do my best to show you that your time and feelings matter.</p>
+    </section>
+
+    <div class="actions" id="actions">
+      <button id="yes" type="button">I will ♡</button>
+      <button id="no" type="button">I won't</button>
+    </div>
+    <p class="foot" id="foot">written with care · ♡</p>
+  </article>
+</main>
+
+<script>
+  const yes = document.querySelector('#yes');
+  const no = document.querySelector('#no');
+  const intro = document.querySelector('#intro');
+  const please = document.querySelector('#please');
+  const accepted = document.querySelector('#accepted');
+  const actions = document.querySelector('#actions');
+  const foot = document.querySelector('#foot');
+  let noCount = 0;
+
+  no.addEventListener('click', () => {
+    noCount++;
+    if (noCount === 1) {
+      yes.style.transform = 'scale(1.2)';
+      yes.style.boxShadow = '0 11px 26px #b96f8855';
+      no.style.transform = 'scale(.82)';
+      no.textContent = 'Are you sure?';
+    } else {
+      intro.style.display = 'none';
+      please.style.display = 'block';
+      no.style.display = 'none';
+      yes.style.transform = 'scale(1.36)';
+      yes.textContent = 'Okay, I will ♡';
+      foot.textContent = 'pretty please?';
+    }
+  });
+
+  yes.addEventListener('click', () => {
+    intro.style.display = 'none';
+    please.style.display = 'none';
+    accepted.style.display = 'block';
+    actions.style.display = 'none';
+    foot.textContent = 'a little promise to do better';
+    celebrate();
+  });
+
+  function celebrate() {
+    const pieces = ['♡', '✧', '✦', '♥'];
+    for (let i = 0; i < 28; i++) {
+      const el = document.createElement('span');
+      el.className = 'confetti';
+      el.textContent = pieces[i % pieces.length];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.color = ['#bd718a', '#d99caf', '#a96c83'][i % 3];
+      el.style.fontSize = (13 + Math.random() * 16) + 'px';
+      el.style.setProperty('--time', (3.8 + Math.random() * 2.8) + 's');
+      el.style.setProperty('--drift', (Math.random() * 150 - 75) + 'px');
+      document.body.appendChild(el);
+      window.setTimeout(() => el.remove(), 7000);
+    }
+  }
+</script>
+</body>
+</html>
